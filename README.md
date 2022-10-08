@@ -2,7 +2,7 @@
 
 Submitted by: **Nikhil Joshi**
 
-**Flixter 2** is a movie browsing app that allows users to browse ... [TODO] 
+**Flixter 2** is a movie browsing app that allows users to browse
 
 Time spent: **10** hours spent in total
 
