@@ -20,16 +20,7 @@ import okhttp3.Headers
 import org.json.JSONArray
 
 private const val API_KEY = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
-
-/*
- * The class for the only fragment in the app, which contains the progress bar,
- * recyclerView, and performs the network calls to the NY Times API.
- */
 class MoviesFragment : Fragment(), OnListFragmentInteractionListener {
-
-    /*
-     * Constructing the view
-     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -42,11 +33,6 @@ class MoviesFragment : Fragment(), OnListFragmentInteractionListener {
         updateAdapter(progressBar, recyclerView)
         return view
     }
-
-    /*
-     * Updates the RecyclerView adapter with new data.  This is where the
-     * networking magic happens!
-     */
     private fun updateAdapter(progressBar: ContentLoadingProgressBar, recyclerView: RecyclerView) {
         progressBar.show()
 
@@ -55,25 +41,18 @@ class MoviesFragment : Fragment(), OnListFragmentInteractionListener {
         val params = RequestParams()
         params["api_key"] = API_KEY
 
-        // Using the client, perform the HTTP request
-
         client[
 
-        "https://api.themoviedb.org/3/movie/now_playing?",
+        "https://api.themoviedb.org/3/movie/top_rated?",
                 params,
                 object : JsonHttpResponseHandler()
 
                 {
-                    /*
-                     * The onSuccess function gets called when
-                     * HTTP response status is "200 OK"
-                     */
                     override fun onSuccess(
                         statusCode: Int,
                         headers: Headers,
                         json: JsonHttpResponseHandler.JSON
                     ) {
-                        // The wait for a response is over
                         progressBar.hide()
 
                         //TODO - Parse JSON into Models
@@ -85,24 +64,15 @@ class MoviesFragment : Fragment(), OnListFragmentInteractionListener {
                         val arrayMovieType = object : TypeToken<List<Movie>>() {}.type
                         val models : List<Movie> = gson.fromJson(moviesRawJSON, arrayMovieType)
                         recyclerView.adapter = MoviesRecyclerViewAdapter(models, this@MoviesFragment)
-                        // Look for this in Logcat:
                         Log.d("MoviesFragment", "response successful")
                     }
-
-                    /*
-                     * The onFailure function gets called when
-                     * HTTP response status is "4XX" (eg. 401, 403, 404)
-                     */
                     override fun onFailure(
                         statusCode: Int,
                         headers: Headers?,
                         errorResponse: String,
                         t: Throwable?
                     ) {
-                        // The wait for a response is over
                         progressBar.hide()
-
-                        // If the error is not null, log it!
                         t?.message?.let {
                             Log.e("MoviesFragment", errorResponse)
                         }
@@ -110,10 +80,6 @@ class MoviesFragment : Fragment(), OnListFragmentInteractionListener {
                 }]
 
     }
-
-    /*
-     * Intent Logic
-     */
     override fun onItemClick(item: Movie) {
         Toast.makeText(context, "" + item.title, Toast.LENGTH_LONG).show()
         val intent = Intent(context, DetailActivity::class.java)
